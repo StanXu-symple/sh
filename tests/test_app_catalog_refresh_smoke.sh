@@ -56,11 +56,11 @@ git() {
 
 refresh_apps_catalog
 test -d "$HOME/apps/.git"
-grep -Fx 'clone --depth=1 github.com/kejilion/apps.git '"$HOME"'/apps' "$git_log" >/dev/null
+grep -Fx 'clone --depth=1 github.com/StanXu-symple/apps.git '"$HOME"'/apps' "$git_log" >/dev/null
 
 : >"$git_log"
 refresh_apps_catalog
-grep -Fx -- '-C '"$HOME"'/apps pull --ff-only github.com/kejilion/apps.git main' "$git_log" >/dev/null
+grep -Fx -- '-C '"$HOME"'/apps pull --ff-only github.com/StanXu-symple/apps.git main' "$git_log" >/dev/null
 
 if GIT_PULL_FAIL=1 refresh_apps_catalog >"$test_root/pull-failure.out" 2>&1; then
 	echo "catalog refresh accepted a failed fast-forward pull" >&2

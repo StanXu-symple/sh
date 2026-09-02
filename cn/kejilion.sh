@@ -18815,7 +18815,7 @@ openclaw_backup_restore_menu() {
 
 refresh_apps_catalog() {
 	local apps_dir="$HOME/apps"
-	local apps_remote="${gh_proxy}github.com/kejilion/apps.git"
+	local apps_remote="${gh_proxy}github.com/StanXu-symple/apps.git"
 
 	install git || return 1
 	if [ -e "$apps_dir" ] && [ ! -d "$apps_dir/.git" ]; then
