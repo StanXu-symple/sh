@@ -6,8 +6,8 @@ app_conf="${project_root}/apps/auto-x.conf"
 
 bash -n "$app_conf"
 grep -F 'github.com/StanXu-symple/auto-x.git' "$app_conf" >/dev/null
-grep -F 'git clone --depth=1' "$app_conf" >/dev/null
-grep -F 'git -C "$auto_x_install_dir" pull --ff-only "$auto_x_repo_url" main' "$app_conf" >/dev/null
+grep -F 'git clone --depth=1 --branch stanxu' "$app_conf" >/dev/null
+grep -F 'git -C "$auto_x_install_dir" pull --ff-only "$auto_x_repo_url" stanxu' "$app_conf" >/dev/null
 grep -F 'rsync -a --delete' "$app_conf" >/dev/null
 grep -F -- "--exclude '.env'" "$app_conf" >/dev/null
 grep -F 'auto_x_compose up -d --build' "$app_conf" >/dev/null

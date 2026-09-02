@@ -18823,13 +18823,13 @@ refresh_apps_catalog() {
 		return 1
 	fi
 	if [ ! -d "$apps_dir/.git" ]; then
-		timeout 30s git clone --depth=1 "$apps_remote" "$apps_dir" || {
+		timeout 30s git clone --depth=1 --branch stanxu "$apps_remote" "$apps_dir" || {
 			echo -e "${gl_hong}应用列表下载失败，拒绝使用不完整配置。${gl_bai}"
 			return 1
 		}
 		return 0
 	fi
-	if ! timeout 30s git -C "$apps_dir" pull --ff-only "$apps_remote" main; then
+	if ! timeout 30s git -C "$apps_dir" pull --ff-only "$apps_remote" stanxu; then
 		echo -e "${gl_hong}应用列表更新失败，拒绝继续使用可能过期的配置。${gl_bai}"
 		echo "请检查网络或 ${apps_dir} 中的本地修改后重试。"
 		return 1

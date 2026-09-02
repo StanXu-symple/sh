@@ -42,7 +42,8 @@ git() {
 	printf '%s\n' "$*" >>"$git_log"
 	case "$1" in
 		clone)
-			destination=${4:?missing clone destination}
+			destination="${@: -1}"
+			[ -n "$destination" ] || return 1
 			mkdir -p "$destination/.git"
 			;;
 		-C)
@@ -56,11 +57,11 @@ git() {
 
 refresh_apps_catalog
 test -d "$HOME/apps/.git"
-grep -Fx 'clone --depth=1 github.com/StanXu-symple/apps.git '"$HOME"'/apps' "$git_log" >/dev/null
+grep -Fx 'clone --depth=1 --branch stanxu github.com/StanXu-symple/apps.git '"$HOME"'/apps' "$git_log" >/dev/null
 
 : >"$git_log"
 refresh_apps_catalog
-grep -Fx -- '-C '"$HOME"'/apps pull --ff-only github.com/StanXu-symple/apps.git main' "$git_log" >/dev/null
+grep -Fx -- '-C '"$HOME"'/apps pull --ff-only github.com/StanXu-symple/apps.git stanxu' "$git_log" >/dev/null
 
 if GIT_PULL_FAIL=1 refresh_apps_catalog >"$test_root/pull-failure.out" 2>&1; then
 	echo "catalog refresh accepted a failed fast-forward pull" >&2
