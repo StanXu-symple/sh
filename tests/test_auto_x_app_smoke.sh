@@ -12,6 +12,10 @@ grep -F 'rsync -a --delete' "$app_conf" >/dev/null
 grep -F -- "--exclude '.env'" "$app_conf" >/dev/null
 grep -F 'auto_x_compose up -d --build --wait' "$app_conf" >/dev/null
 grep -F 'auto_x_compose up -d --build --remove-orphans --wait' "$app_conf" >/dev/null
+if grep -F 'docker rm -f x-sentinel-xhs-worker-1' "$app_conf" >/dev/null; then
+    echo "auto-x update must not remove the active xhs-worker" >&2
+    exit 1
+fi
 grep -F 'auto_x_compose down --volumes --rmi local --remove-orphans' "$app_conf" >/dev/null
 grep -F './data/mysql:/var/lib/mysql' "$app_conf" >/dev/null
 grep -F './data/redis:/data' "$app_conf" >/dev/null
