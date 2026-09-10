@@ -21,5 +21,6 @@ grep -F './data/postgres:/var/lib/postgresql/data' "$app_conf" >/dev/null
 grep -F './data/redis:/data' "$app_conf" >/dev/null
 grep -F 'auto_x_sync_nacos_config' "$app_conf" >/dev/null
 grep -F 'NACOS_CONFIG_DATA_ID' "$app_conf" >/dev/null
+grep -F 'XHS_WORKER_IMAGE' "$app_conf" >/dev/null
 
 echo "auto_x_app_smoke=pass"
