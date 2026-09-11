@@ -17,6 +17,7 @@ grep -F 'KJ_AUTO_X_PULL_RETRIES' "$app_conf" >/dev/null
 grep -F 'auto_x_load_selected_services' "$app_conf" >/dev/null
 grep -F 'selected="$(head -n 1 "$auto_x_services_file")"' "$app_conf" >/dev/null
 grep -F 'auto_x_service_selected()' "$app_conf" >/dev/null
+grep -F 'auto_x_normalize_services()' "$app_conf" >/dev/null
 grep -F 'docker_app_prepare_install()' "$app_conf" >/dev/null
 grep -F 'auto_x_select_services false' "$app_conf" >/dev/null
 grep -F 'docker_app_install_requires_port()' "$app_conf" >/dev/null
@@ -44,11 +45,14 @@ grep -F 'auto_x_check_nacos' "$app_conf" >/dev/null
 grep -F -- '--check' "$app_conf" >/dev/null
 grep -F '正在验证 Nacos 地址、账号和密码' "$app_conf" >/dev/null
 grep -F 'Nacos 连接或认证验证失败，请从地址开始重新填写' "$app_conf" >/dev/null
+grep -F 'Nacos 验证程序不支持 --check' "$app_conf" >/dev/null
+grep -F 'auto_x_set_env_if_default NACOS_CONFIG_REQUIRED "true" "false"' "$app_conf" >/dev/null
 grep -F 'NACOS_CONFIG_DATA_ID' "$app_conf" >/dev/null
 grep -F 'XHS_WORKER_IMAGE' "$app_conf" >/dev/null
 
 service_hook_body="$({
     awk '
+        /^auto_x_normalize_services\(\) \{/ { capture=1 }
         /^auto_x_service_selected\(\) \{/ { capture=1 }
         /^docker_app_install_requires_port\(\) \{/ { capture=1 }
         capture { print }
@@ -56,6 +60,12 @@ service_hook_body="$({
     ' "$app_conf"
 })"
 eval "$service_hook_body"
+test "$(auto_x_normalize_services 'backend,, frontend,backend')" = "backend,frontend"
+test "$(auto_x_normalize_services ' all ')" = "backend,frontend,worker,ai-worker,qq-worker,xhs-worker,auth-center,monitor-center,monitor-agent"
+if auto_x_normalize_services 'backend,unknown-service' >/dev/null 2>&1; then
+    echo "unknown Auto-X service was accepted" >&2
+    exit 1
+fi
 app_id="auto-x"
 AUTO_X_SERVICES="monitor-agent"
 if docker_app_install_requires_port; then
