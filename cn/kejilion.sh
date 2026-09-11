@@ -39,6 +39,31 @@ kpanel_protocol_active() {
 	[ "${KJ_TEST_NONINTERACTIVE:-}" = "1" ]
 }
 
+apply_runtime_environment_choice() {
+	case "${1:-}" in
+		1) canshu="CN" ;;
+		2) canshu="V6" ;;
+		3|"") canshu="default" ;;
+		*)
+			echo "无效选择，使用 default 环境。"
+			canshu="default"
+			;;
+	esac
+}
+
+select_runtime_environment() {
+	local environment_choice
+	kpanel_protocol_active && return 0
+	[ -t 0 ] || return 0
+
+	echo "请选择当前环境："
+	echo "1. CN      GitHub 走 gh.kejilion.pro，并启用国内镜像优化"
+	echo "2. V6      GitHub 走 gh.kejilion.pro，不启用 CN 专属优化"
+	echo "3. default GitHub 直连，不启用 CN 专属优化（直接回车）"
+	read -r -p "请选择 [3/default]: " environment_choice
+	apply_runtime_environment_choice "$environment_choice"
+}
+
 
 quanju_canshu() {
 if [ "$canshu" = "CN" ]; then
@@ -55,6 +80,7 @@ fi
 gh_https_url="https://"
 
 }
+select_runtime_environment
 quanju_canshu
 
 
