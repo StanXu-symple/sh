@@ -6,6 +6,14 @@ app_conf="${project_root}/apps/auto-x.conf"
 
 bash -n "$app_conf"
 grep -F 'github.com/StanXu-symple/auto-x.git' "$app_conf" >/dev/null
+grep -F 'KJ_AUTO_X_IMAGE_REGISTRY' "$app_conf" >/dev/null
+grep -F 'auto_x_image_registry%/' "$app_conf" >/dev/null
+grep -F 'KJ_AUTO_X_IMAGE_REGISTRY:-ghcr.dockerproxy.net' "$app_conf" >/dev/null
+grep -F 'auto_x_set_env_if_default' "$app_conf" >/dev/null
+grep -F 'gh.kejilion.pro/github.com/StanXu-symple/auto-x.git' "$app_conf" >/dev/null
+grep -F 'KJ_AUTO_X_GIT_TIMEOUT_SECONDS' "$app_conf" >/dev/null
+grep -F 'auto_x_compose_pull' "$app_conf" >/dev/null
+grep -F 'KJ_AUTO_X_PULL_RETRIES' "$app_conf" >/dev/null
 grep -F 'git clone --depth=1 --branch main' "$app_conf" >/dev/null
 grep -F 'git -C "$auto_x_install_dir" pull --ff-only "$auto_x_repo_url" main' "$app_conf" >/dev/null
 grep -F 'rsync -a --delete' "$app_conf" >/dev/null
