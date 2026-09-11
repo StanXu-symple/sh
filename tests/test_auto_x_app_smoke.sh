@@ -14,6 +14,8 @@ grep -F 'gh.kejilion.pro/github.com/StanXu-symple/auto-x.git' "$app_conf" >/dev/
 grep -F 'KJ_AUTO_X_GIT_TIMEOUT_SECONDS' "$app_conf" >/dev/null
 grep -F 'auto_x_compose_pull' "$app_conf" >/dev/null
 grep -F 'KJ_AUTO_X_PULL_RETRIES' "$app_conf" >/dev/null
+grep -F 'auto_x_load_selected_services' "$app_conf" >/dev/null
+grep -F 'selected="$(head -n 1 "$auto_x_services_file")"' "$app_conf" >/dev/null
 grep -F 'git clone --depth=1 --branch main' "$app_conf" >/dev/null
 grep -F 'git -C "$auto_x_install_dir" pull --ff-only "$auto_x_repo_url" main' "$app_conf" >/dev/null
 grep -F 'rsync -a --delete' "$app_conf" >/dev/null
