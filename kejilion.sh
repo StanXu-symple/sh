@@ -3586,7 +3586,13 @@ docker_app_plus() {
 				setup_docker_dir
 				check_disk_space $app_size /home/docker
 
-				kpanel_app_choose_install_port || return 1
+				if declare -F docker_app_prepare_install >/dev/null 2>&1; then
+					docker_app_prepare_install || return 1
+				fi
+				if ! declare -F docker_app_install_requires_port >/dev/null 2>&1 \
+					|| docker_app_install_requires_port; then
+					kpanel_app_choose_install_port || return 1
+				fi
 
 				install jq
 				install_docker

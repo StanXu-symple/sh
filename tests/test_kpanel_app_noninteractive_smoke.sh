@@ -86,6 +86,8 @@ printf '%s\n' "${helper_body}" | grep -F '[ "${KJ_APP_ACTION:-}" != "install" ]'
 printf '%s\n' "${helper_body}" | grep -F 'kpanel_app_install_port || return 1' >/dev/null
 printf '%s\n' "${docker_app_body}" | grep -F 'kpanel_app_choose_install_port || return 1' >/dev/null
 printf '%s\n' "${docker_app_plus_body}" | grep -F 'kpanel_app_choose_install_port || return 1' >/dev/null
+printf '%s\n' "${docker_app_plus_body}" | grep -F 'docker_app_prepare_install' >/dev/null
+printf '%s\n' "${docker_app_plus_body}" | grep -F 'docker_app_install_requires_port' >/dev/null
 printf '%s\n' "${choose_port_body}" | grep -F '[ "${KJ_APP_INTERACTIVE:-}" = "1" ]' >/dev/null
 printf '%s\n' "${choose_port_body}" | grep -F 'kpanel_app_install_port' >/dev/null
 printf '%s\n' "${helper_body}" | grep -F 'if ! docker_app_install; then' >/dev/null
