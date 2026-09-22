@@ -18849,6 +18849,18 @@ refresh_apps_catalog() {
 	local apps_dir="$HOME/apps"
 	local apps_remote="${gh_proxy}github.com/StanXu-symple/apps.git"
 
+	# Deployment automation can upload a reviewed app definition alongside this
+	# launcher.  In that mode do not replace it with the network catalog: the
+	# caller has already selected the exact source revision to install.
+	if [ "${KJ_APPS_SKIP_REFRESH:-0}" = "1" ]; then
+		if [ -f "$apps_dir/auto-x.conf" ]; then
+			echo "已使用 $apps_dir 中的本地应用配置，跳过应用列表刷新。"
+			return 0
+		fi
+		echo "错误: KJ_APPS_SKIP_REFRESH=1，但未找到 $apps_dir/auto-x.conf。"
+		return 1
+	fi
+
 	install git || return 1
 	if [ -e "$apps_dir" ] && [ ! -d "$apps_dir/.git" ]; then
 		echo -e "${gl_hong}错误: ${gl_bai}${apps_dir} 已存在但不是应用市场 Git 仓库，拒绝覆盖。"
@@ -29968,7 +29980,7 @@ else
 			;;
 
 
-		app)
+		app|apps)
 			shift
 			send_stats "应用$@"
 			linux_panel "$@"
