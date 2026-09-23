@@ -29980,7 +29980,7 @@ else
 			;;
 
 
-		app|apps)
+		app)
 			shift
 			send_stats "应用$@"
 			linux_panel "$@"
