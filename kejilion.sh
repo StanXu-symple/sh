@@ -3564,7 +3564,11 @@ docker_app_plus() {
 				echo "$docker_port" > "/home/docker/${docker_name}_port.conf"
 			fi
 			local docker_port=$(cat "/home/docker/${docker_name}_port.conf")
-			check_docker_app_ip
+			if declare -F docker_app_show_access_info >/dev/null 2>&1; then
+				docker_app_show_access_info
+			else
+				check_docker_app_ip
+			fi
 		fi
 		echo ""
 		echo "------------------------"
