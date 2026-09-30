@@ -29984,7 +29984,12 @@ else
 			;;
 
 
-		app)
+        auto-x)
+            shift
+            linux_panel auto-x
+            ;;
+
+		app|apps)
 			shift
 			send_stats "应用$@"
 			linux_panel "$@"

@@ -3564,7 +3564,11 @@ docker_app_plus() {
 				echo "$docker_port" > "/home/docker/${docker_name}_port.conf"
 			fi
 			local docker_port=$(cat "/home/docker/${docker_name}_port.conf")
-			check_docker_app_ip
+			if declare -F docker_app_show_access_info >/dev/null 2>&1; then
+				docker_app_show_access_info
+			else
+				check_docker_app_ip
+			fi
 		fi
 		echo ""
 		echo "------------------------"
@@ -3586,7 +3590,13 @@ docker_app_plus() {
 				setup_docker_dir
 				check_disk_space $app_size /home/docker
 
-				kpanel_app_choose_install_port || return 1
+				if declare -F docker_app_prepare_install >/dev/null 2>&1; then
+					docker_app_prepare_install || return 1
+				fi
+				if ! declare -F docker_app_install_requires_port >/dev/null 2>&1 \
+					|| docker_app_install_requires_port; then
+					kpanel_app_choose_install_port || return 1
+				fi
 
 				install jq
 				install_docker
@@ -18843,6 +18853,18 @@ refresh_apps_catalog() {
 	local apps_dir="$HOME/apps"
 	local apps_remote="${gh_proxy}github.com/StanXu-symple/apps.git"
 
+	# Deployment automation can upload a reviewed app definition alongside this
+	# launcher.  In that mode do not replace it with the network catalog: the
+	# caller has already selected the exact source revision to install.
+	if [ "${KJ_APPS_SKIP_REFRESH:-0}" = "1" ]; then
+		if [ -f "$apps_dir/auto-x.conf" ]; then
+			echo "已使用 $apps_dir 中的本地应用配置，跳过应用列表刷新。"
+			return 0
+		fi
+		echo "错误: KJ_APPS_SKIP_REFRESH=1，但未找到 $apps_dir/auto-x.conf。"
+		return 1
+	fi
+
 	install git || return 1
 	if [ -e "$apps_dir" ] && [ ! -d "$apps_dir/.git" ]; then
 		echo -e "${gl_hong}错误: ${gl_bai}${apps_dir} 已存在但不是应用市场 Git 仓库，拒绝覆盖。"
@@ -18959,7 +18981,7 @@ while true; do
 	  echo -e "${gl_kjlan}113. ${color113}Firefox浏览器                       ${gl_kjlan}114. ${color114}OpenClaw机器人管理工具${gl_huang}★${gl_bai}"
 	  echo -e "${gl_kjlan}115. ${color115}Hermes机器人管理工具${gl_huang}★${gl_bai}               ${gl_kjlan}116. ${color116}DeepSeek Harness管理工具${gl_huang}★${gl_bai}"
 	  echo -e "${gl_kjlan}117. ${color117}99CDN自建CDN管理平台                ${gl_kjlan}118. ${color118}99DNS智能调度服务"
-	  echo -e "${gl_kjlan}-------------------------"
+  echo -e "${gl_kjlan}-------------------------"
 	  echo -e "${gl_kjlan}第三方应用列表"
   	  echo -e "${gl_kjlan}想要让你的应用出现在这里？查看开发者指南: ${gl_huang}https://dev.kejilion.sh/${gl_bai}"
 
@@ -29618,7 +29640,7 @@ echo "放行IP              k fxip 127.0.0.0/8 |k 放行IP 127.0.0.0/8"
 echo "阻止IP              k zzip 177.5.25.36 |k 阻止IP 177.5.25.36"
 echo "命令收藏夹          k fav | k 命令收藏夹"
 echo "应用市场管理        k app"
-echo "应用编号快捷管理    k app 26 | k app 1panel | k app npm"
+echo "应用编号快捷管理    k app 26 | k app 1panel | k app npm | k app nacos"
 echo "fail2ban管理        k fail2ban | k f2b [status|enable|disable]"
 echo "显示系统信息        k info"
 echo "ROOT密钥管理        k sshkey"
@@ -29962,7 +29984,12 @@ else
 			;;
 
 
-		app)
+        auto-x)
+            shift
+            linux_panel auto-x
+            ;;
+
+		app|apps)
 			shift
 			send_stats "应用$@"
 			linux_panel "$@"

@@ -72,7 +72,7 @@ service_hook_body="$({
 })"
 eval "$service_hook_body"
 test "$(auto_x_normalize_services 'backend,, frontend,backend')" = "backend,frontend"
-test "$(auto_x_normalize_services ' all ')" = "backend,frontend,worker,ai-worker,qq-worker,xhs-worker,auth-center,monitor-center,monitor-agent"
+test "$(auto_x_normalize_services ' all ')" = "backend,frontend,worker,ai-worker,qq-worker,xhs-worker,camoufox-worker,auth-center,monitor-center,monitor-agent"
 if auto_x_normalize_services 'backend,unknown-service' >/dev/null 2>&1; then
     echo "unknown Auto-X service was accepted" >&2
     exit 1
@@ -183,3 +183,12 @@ test "$nacos_addr_value" = "http://good-nacos:8848"
 test "$nacos_password_value" = "good-password"
 
 echo "auto_x_app_smoke=pass"
+
+AUTO_X_SERVICES="xhs-worker"
+auto_x_add_service_dependencies
+test "$AUTO_X_SERVICES" = "xhs-worker,camoufox-worker,monitor-agent"
+AUTO_X_SERVICES="xhs-worker"
+KJ_AUTO_X_CAMOUFOX_REMOTE=1
+auto_x_add_service_dependencies
+test "$AUTO_X_SERVICES" = "xhs-worker,monitor-agent"
+bash -n "${project_root}/sh/auto-x.sh"
